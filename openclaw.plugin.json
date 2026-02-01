@@ -1,0 +1,34 @@
+{
+  "id": "openclaw-task-router",
+  "name": "Task Router",
+  "description": "Dynamic model routing with MemOS learning - routes tasks to optimal models based on complexity scoring and history",
+  "version": "1.0.0",
+  "kind": "lifecycle",
+  "main": "./index.js",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable task routing"
+      },
+      "injectRecommendation": {
+        "type": "boolean", 
+        "default": true,
+        "description": "Inject routing recommendation into agent context"
+      },
+      "recordOutcomes": {
+        "type": "boolean",
+        "default": true,
+        "description": "Record task outcomes to MemOS for learning"
+      },
+      "memosEndpoint": {
+        "type": "string",
+        "default": "http://127.0.0.1:8001/sse",
+        "description": "MemOS MCP endpoint"
+      }
+    },
+    "additionalProperties": false
+  }
+}

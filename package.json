@@ -1,0 +1,35 @@
+{
+  "name": "openclaw-task-router",
+  "version": "1.0.0",
+  "description": "Dynamic model routing based on task complexity with MemOS learning",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "discover": "node discover-cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anatolykoptev/openclaw-task-router.git"
+  },
+  "author": "Anatoly Koptev <koptev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anatolykoptev/openclaw-task-router/issues"
+  },
+  "homepage": "https://github.com/anatolykoptev/openclaw-task-router#readme",
+  "keywords": [
+    "openclaw",
+    "openclaw-plugin",
+    "task-router",
+    "model-routing",
+    "llm",
+    "cost-optimization",
+    "memos"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "openclaw": {
+    "extensions": ["./index.js"]
+  }
+}
