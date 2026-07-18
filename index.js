@@ -15,7 +15,7 @@ import crypto from 'node:crypto';
 // CONFIGURATION
 // ═══════════════════════════════════════════════════════════════════════════
 
-const MCPORTER = '/home/krolik/.nvm/versions/node/v24.13.0/bin/mcporter';
+const MCPORTER = '/home/user/.nvm/versions/node/v24.13.0/bin/mcporter';
 
 // Dedicated cube for task-router data (keeps personal memories clean)
 const TASK_ROUTER_CUBE_ID = 'fea6f89c-f9e5-4894-8e15-a22b8e756c04';

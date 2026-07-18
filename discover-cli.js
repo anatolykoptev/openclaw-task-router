@@ -9,7 +9,7 @@ import { writeFileSync, readFileSync, unlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const MCPORTER = '/home/krolik/.nvm/versions/node/v24.13.0/bin/mcporter';
+const MCPORTER = '/home/user/.nvm/versions/node/v24.13.0/bin/mcporter';
 const COST_THRESHOLD = 0.15;
 
 function callMemos(method, args = {}) {

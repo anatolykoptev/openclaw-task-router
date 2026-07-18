@@ -179,7 +179,7 @@ This means tests pass but actual routing differs.
 
 ### 3. mcporter Path
 
-- scorer.py: Hardcoded `/home/krolik/.nvm/versions/node/v24.13.0/bin/mcporter`
+- scorer.py: Hardcoded `/home/user/.nvm/versions/node/v24.13.0/bin/mcporter`
 - spawn_routed.py: Same hardcoded path
 - record_outcome.py: Uses `MCPORTER` constant
 

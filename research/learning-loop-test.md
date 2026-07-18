@@ -107,7 +107,7 @@ Created test signature `test-learning-001` with 4 outcomes:
 | `MIN_ATTEMPTS_FOR_DECISION` | 3 | `router/escalate.py` |
 | `ESCALATE_THRESHOLD` | 0.5 (50%) | `router/escalate.py` |
 | `DOWNGRADE_THRESHOLD` | 0.8 (80%) | `router/escalate.py` |
-| `MCPORTER` | `/home/krolik/.nvm/versions/node/v24.13.0/bin/mcporter` | `router/history.py` |
+| `MCPORTER` | `/home/user/.nvm/versions/node/v24.13.0/bin/mcporter` | `router/history.py` |
 
 ## Tier Order
 

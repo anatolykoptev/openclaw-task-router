@@ -1,6 +1,6 @@
 # Felix Model Router - Complete Architecture Analysis
 
-> Research from `/tmp/krolik-cli/src/lib/@felix/` codebase
+> Research from `/tmp/example-cli/src/lib/@felix/` codebase
 > Date: 2026-01-31
 
 ## Executive Summary
@@ -455,7 +455,7 @@ class CostPlugin extends BasePlugin {
 | `ValidationPlugin` | `validation-plugin.ts` | Run typecheck/lint/tests after changes |
 | `CircuitBreakerPlugin` | `circuit-breaker-plugin.ts` | Stop on consecutive failures |
 | `ContextPlugin` | `context-plugin.ts` | Inject project context |
-| `QualityGatePlugin` | `quality-gate-plugin.ts` | Run krolik_audit post-task |
+| `QualityGatePlugin` | `quality-gate-plugin.ts` | Run example_audit post-task |
 | `GitPlugin` | `git-plugin.ts` | Auto-commit on success |
 | `MemoryPlugin` | `memory-plugin.ts` | Save decisions/bugfixes to memory |
 | `RateLimitPlugin` | `rate-limit-plugin.ts` | Enforce API rate limits |
