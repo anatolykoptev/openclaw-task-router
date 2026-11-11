@@ -172,7 +172,7 @@ const TIER_THRESHOLDS = {
 
 ## License
 
-MIT © [Anatoly Koptev](https://github.com/anatolykoptev)
+Apache-2.0 © [Anatoly Koptev](https://github.com/anatolykoptev)
 
 ## Contributing
 
