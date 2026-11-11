@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "discover": "node discover-cli.js"
+    "discover": "node discover-cli.js",
+    "test": "node --test test/*.test.js"
   },
   "repository": {
     "type": "git",
