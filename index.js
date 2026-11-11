@@ -2,20 +2,16 @@
  * OpenClaw Task Router Plugin
  * 
  * Dynamic model routing with MemOS learning.
- * All logic inlined to avoid module caching issues.
+ * Scoring logic is inlined to avoid module caching issues; the only external
+ * command (mcporter) is run by memos-exec.js, without a shell.
  */
 
-import { execSync } from 'node:child_process';
-import { writeFileSync, readFileSync, unlinkSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import crypto from 'node:crypto';
+import { runMemos } from './memos-exec.js';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONFIGURATION
 // ═══════════════════════════════════════════════════════════════════════════
-
-const MCPORTER = '/home/user/.nvm/versions/node/v24.13.0/bin/mcporter';
 
 // Dedicated cube for task-router data (keeps personal memories clean)
 const TASK_ROUTER_CUBE_ID = 'fea6f89c-f9e5-4894-8e15-a22b8e756c04';
@@ -73,28 +69,17 @@ function callMemos(method, args = {}, useCube = true) {
     // Auto-inject cube for model/routing operations
     if (useCube) {
       if (method === 'search_memories' && !args.cube_ids) {
-        args.cube_ids = `["${TASK_ROUTER_CUBE_ID}"]`;
+        args.cube_ids = [TASK_ROUTER_CUBE_ID];
       } else if (method === 'add_memory' && !args.cube_id) {
         args.cube_id = TASK_ROUTER_CUBE_ID;
       }
     }
     
-    const argsStr = Object.entries(args)
-      .map(([k, v]) => {
-        // Don't double-quote arrays
-        if (typeof v === 'string' && v.startsWith('[')) {
-          return `${k}: ${v}`;
-        }
-        return `${k}: "${String(v).replace(/"/g, '\\"')}"`;
-      })
-      .join(', ');
-    
-    const tmpPath = join(tmpdir(), `memos-${Date.now()}.json`);
-    execSync(`${MCPORTER} call 'memos.${method}(${argsStr})' > ${tmpPath} 2>/dev/null`, { timeout: 10000 });
-    
-    const data = JSON.parse(readFileSync(tmpPath, 'utf-8'));
-    unlinkSync(tmpPath);
-    return data;
+    // Strings stay strings (never parsed as expressions); arrays pass through.
+    const payload = Object.fromEntries(
+      Object.entries(args).map(([k, v]) => [k, Array.isArray(v) ? v : String(v)]),
+    );
+    return JSON.parse(runMemos(method, payload, 10000));
   } catch {
     return null;
   }
