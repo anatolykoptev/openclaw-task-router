@@ -5,14 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "discover": "node discover-cli.js"
+    "discover": "node discover-cli.js",
+    "test": "node --test test/*.test.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/anatolykoptev/openclaw-task-router.git"
   },
   "author": "Anatoly Koptev <koptev@gmail.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/anatolykoptev/openclaw-task-router/issues"
   },

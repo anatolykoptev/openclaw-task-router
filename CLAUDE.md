@@ -14,9 +14,10 @@ Notes for coding agents. Overview and configuration: [README.md](README.md); all
 
 ## Gate
 
-There is no CI, no test suite and no build. Before a commit:
+There is no CI and no build. Before a commit:
 
 ```sh
+npm test
 node --check index.js && node --check discover-cli.js
 node -e "import('./index.js').then(m => console.log(m.default.id, m.routeTask('fix typo').tier))"
 ```
@@ -27,6 +28,8 @@ node -e "import('./index.js').then(m => console.log(m.default.id, m.routeTask('f
   `package.json` and `openclaw.plugin.json` equal.
 - `routeTask` must stay synchronous and total: when MemOS or `mcporter` fails, `getModelForTier` falls
   back to `FALLBACK_MODELS` instead of throwing.
+- External commands go through `memos-exec.js` (`execFileSync` with a fixed argument vector, payload on
+  stdin); never build a shell command string, and keep `test/no-shell.test.js` passing.
 - Outcomes are recorded but not yet read back; do not document learning or escalation as working.
 - `enabled` and `memosEndpoint` exist in the config schema but no code reads them; wire them or
   remove them together.

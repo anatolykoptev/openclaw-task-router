@@ -4,25 +4,16 @@
  * Usage: node discover-cli.js [--dry-run] [--limit N]
  */
 
-import { execSync } from 'node:child_process';
-import { writeFileSync, readFileSync, unlinkSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { runMemos } from './memos-exec.js';
 
-const MCPORTER = '/home/user/.nvm/versions/node/v24.13.0/bin/mcporter';
 const COST_THRESHOLD = 0.15;
 
 function callMemos(method, args = {}) {
   try {
-    const argsStr = Object.entries(args)
-      .map(([k, v]) => `${k}: "${String(v).replace(/"/g, '\\"')}"`)
-      .join(', ');
-    
-    const tmpPath = join(tmpdir(), `memos-${Date.now()}.txt`);
-    execSync(`${MCPORTER} call 'memos.${method}(${argsStr})' > ${tmpPath} 2>/dev/null`, { timeout: 15000 });
-    
-    const content = readFileSync(tmpPath, 'utf-8').trim();
-    unlinkSync(tmpPath);
+    const payload = Object.fromEntries(
+      Object.entries(args).map(([k, v]) => [k, String(v)]),
+    );
+    const content = runMemos(method, payload, 15000).trim();
     
     // Handle both JSON and plain text responses
     try {

@@ -4,9 +4,10 @@ Pull requests are welcome. For anything larger than a fix, open an issue first.
 
 ## Build and test
 
-There is no build step, no dependencies and no test suite. Node.js 18 or newer. Check a change with:
+There is no build step and no dependencies. Node.js 18 or newer. Check a change with:
 
 ```sh
+npm test
 node --check index.js && node --check discover-cli.js
 node -e "import('./index.js').then(m => console.log(m.routeTask('implement user authentication')))"
 ```

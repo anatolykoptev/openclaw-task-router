@@ -43,9 +43,9 @@ Add to your `openclaw.json` (options: `injectRecommendation` and `recordOutcomes
 }
 ```
 
-Node.js 18 or newer; no npm dependencies and no build step. The plugin shells out to the
-`mcporter` CLI to reach MemOS: the path to that binary is a constant (`MCPORTER`) at the top of
-`index.js` and `discover-cli.js` and must be edited to your installation before first use.
+Node.js 18 or newer; no npm dependencies and no build step. The plugin runs the
+`mcporter` CLI to reach MemOS: set `MCPORTER_BIN` to the binary's path (the fallback is a constant in `memos-exec.js`).
+The binary is run directly with fixed arguments, never through a shell.
 
 ## How It Works
 
