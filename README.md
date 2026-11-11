@@ -1,14 +1,13 @@
 # OpenClaw Task Router
 
-**Dynamic model routing based on task complexity with learning from outcomes.**
+**Dynamic model routing based on task complexity, with outcome recording.**
 
-Route tasks to the optimal LLM model tier (free → cheap → standard → premium → research) based on complexity scoring, and learn from success/failure history to improve routing over time.
+An [OpenClaw](https://github.com/openclaw/openclaw) plugin that scores each task and recommends an LLM model tier (free → cheap → standard → premium → research). It injects the recommendation into the agent's context and records success or failure per task signature in MemOS. It is for OpenClaw operators who want cheap models on trivial tasks.
 
 ## Features
 
 - 🎯 **5-Tier Routing**: free, cheap, standard, premium, research
-- 🧠 **MemOS Learning**: Records outcomes and adjusts routing based on success rates
-- 🔄 **Auto-Escalation**: Moves to higher tier after repeated failures
+- 🧠 **MemOS history**: Records an outcome (success or fail) per task signature; routing does not read it back yet
 - 💰 **Cost Optimization**: Uses cheapest model that can handle the task
 - 🌍 **Multilingual**: Supports English and Russian keywords
 - 📊 **Model Discovery**: Auto-syncs cheap/free models from OpenRouter
@@ -20,13 +19,12 @@ Route tasks to the optimal LLM model tier (free → cheap → standard → premi
 cd ~/.openclaw/extensions
 git clone https://github.com/anatolykoptev/openclaw-task-router.git
 
-# Or install via npm (when published)
-npm install openclaw-task-router
 ```
 
 ## Configuration
 
-Add to your `openclaw.json`:
+Add to your `openclaw.json` (options: `injectRecommendation` and `recordOutcomes`, both default true;
+`enabled` and `memosEndpoint` are declared in the schema but not read by the code):
 
 ```json
 {
@@ -44,6 +42,10 @@ Add to your `openclaw.json`:
   }
 }
 ```
+
+Node.js 18 or newer; no npm dependencies and no build step. The plugin runs the
+`mcporter` CLI to reach MemOS: set `MCPORTER_BIN` to the binary's path (the fallback is a constant in `memos-exec.js`).
+The binary is run directly with fixed arguments, never through a shell.
 
 ## How It Works
 
@@ -72,16 +74,18 @@ Each task is scored (0-100) based on:
 
 ### 3. MemOS Integration
 
-Models and routing history are stored in MemOS (requires `memos-mcp` running):
+Models and routing history are stored as text memories in a dedicated MemOS cube (the cube id is a
+constant in `index.js`; replace it with your own). The model for a tier is the highest-priority
+active `MODEL` entry, falling back to the defaults in the table above when MemOS has none or is
+unreachable:
 
 ```
 MODEL tier:free full:openrouter/moonshotai/kimi-k2:free priority:20 status:active
-ROUTING sig:abc123 model:claude-sonnet outcome:success ts:2026-01-31
+ROUTING sig:abc123 model:anthropic/claude-sonnet-4 outcome:success task:... ts:2026-01-31
 ```
 
-The router learns from outcomes:
-- **< 50% success rate** after 3+ attempts → escalate tier
-- **> 80% success rate** after 3+ attempts → can downgrade tier
+`ROUTING` entries are written when an agent run ends. Nothing reads them back to change a route
+yet: the success-rate escalation sketched in `research/learning-loop-test.md` is not implemented.
 
 ## API
 
@@ -106,18 +110,27 @@ Response:
 }
 ```
 
+The HTTP route is registered through OpenClaw's gateway, which provides the authentication; the
+plugin does not check the token itself. `POST /task-router/discover` runs model discovery.
+
+### Agent tools
+
+`route_task` (`task`) returns the same recommendation as the HTTP route; `discover_models` syncs
+models from OpenRouter into MemOS.
+
 ### Lifecycle Hooks
 
 The plugin automatically:
-- Injects `<task_routing>` block before agent starts
-- Records outcomes when agent completes
+- Injects a `<task_routing>` block before the agent starts (`before_agent_start`)
+- Records the outcome of the oldest unfinished task of the last 30 minutes when an agent run ends (`agent_end`)
 
 ## Model Discovery
 
-Sync cheap/free models from OpenRouter:
+Sync cheap/free models from OpenRouter into MemOS. Needs `OPENROUTER_API_KEY` in the environment:
 
 ```bash
 cd ~/.openclaw/extensions/openclaw-task-router
+node discover-cli.js --dry-run --limit 30   # preview
 node discover-cli.js --limit 30
 ```
 
@@ -136,8 +149,9 @@ Set up daily discovery via cron:
 ## Requirements
 
 - OpenClaw 2026.1.30+
-- MemOS (memos-api + memos-mcp) for learning features
-- mcporter CLI configured
+- MemOS (memos-api + memos-mcp) for model and history storage; routing falls back to built-in default models without it
+- mcporter CLI configured with a `memos` server
+- `OPENROUTER_API_KEY` for model discovery
 
 ## Customization
 
@@ -170,10 +184,11 @@ const TIER_THRESHOLDS = {
 };
 ```
 
-## License
+## Status
 
-Apache-2.0 © [Anatoly Koptev](https://github.com/anatolykoptev)
+Version 1.0.0, no tagged releases. The `research/` directory holds the design notes from January 2026.
 
-## Contributing
+## Licence
 
-PRs welcome! See [research/](./research/) for architecture docs.
+Apache-2.0; see [LICENSE](LICENSE). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md). Agent notes:
+[CLAUDE.md](CLAUDE.md); all documents: [docs/INDEX.md](docs/INDEX.md).
